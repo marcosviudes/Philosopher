@@ -19,6 +19,7 @@ SRC_DIR		= src/
 PHILO_SRC	=	main.c\
 				ft_absatol.c\
 				ft_isnum.c\
+				ft_putendl_fd.c\
 				ft_strlen.c
 
 TEST_SRC	=	$(SRC_DIR)/test/main.c

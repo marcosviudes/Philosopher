@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/13 19:49:57 by mviudes           #+#    #+#             */
-/*   Updated: 2021/07/20 15:54:08 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/07/24 20:38:07 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 	
 	env = get_args(argc, argv);
 	(void)env;
-	checkargs();
+	
 	printf("This works");
 	return(0);
 }
