@@ -17,6 +17,7 @@ MKDIR		= mkdir -p
 SRC_DIR		= src/
 
 PHILO_SRC	=	main.c\
+				ft_absatol.c\
 				ft_isnum.c\
 				ft_strlen.c
 

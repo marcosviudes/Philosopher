@@ -19,6 +19,7 @@
 # include <string.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <limits.h>
 
 
 typedef struct s_philo
@@ -28,15 +29,17 @@ typedef struct s_philo
 
 typedef struct s_env
 {
-	int			num_of_philo;
-	int			t_to_die;
-	int			t_to_eat;
-	int			t_to_sleep;
-	int			n_must_eat;
+	long			num_of_philo;
+	long			t_to_die;
+	long			t_to_eat;
+	long			t_to_sleep;
+	long			n_must_eat;
 	t_philo		*philo;
 }				t_env;
 
 void	exit_error(char *string);
 int		ft_isnum(char *string);
 size_t	ft_strlen(const char *str);
+long	ft_absatol(const char *string);
+
 #endif

@@ -29,15 +29,15 @@ t_env	*get_args(int argc, char **argv)
 	ret = malloc(sizeof(t_env));
 	if(!ret)
 		exit_error("imposible to malloc\n");
-	ret->num_of_philo = atoi(argv[1]);
-	ret->t_to_die = atoi(argv[2]);
-	ret->t_to_eat = atoi(argv[3]);
-	ret->t_to_sleep = atoi(argv[4]);
+	ret->num_of_philo = ft_absatol(argv[1]);
+	ret->t_to_die = ft_absatol(argv[2]);
+	ret->t_to_eat = ft_absatol(argv[3]);
+	ret->t_to_sleep = ft_absatol(argv[4]);
 	ret->n_must_eat = 0;
 	if(argc == 6)
-		ret->n_must_eat = atoi(argv[1]);
+		ret->n_must_eat = ft_absatol(argv[5]);
 
-	printf("\targ 1: |%d|\n\targ 2: |%d|\n\targ 3: |%d|\n\targ 4: |%d|\n\targ 5: |%d|\n",
+	printf("\targ 1: |%ld|\n\targ 2: |%ld|\n\targ 3: |%ld|\n\targ 4: |%ld|\n\targ 5: |%ld|\n",
 			ret->num_of_philo, ret->t_to_die, ret->t_to_eat, ret->t_to_sleep, ret->n_must_eat);
 	return(ret);
 }
@@ -58,11 +58,36 @@ int checkargs()
 {
 	return(1);
 }
+
+int philo_message(char *message)
+{
+	(void)message;
+	return (0);
+}
+void *philo_sleep(void *ptr)
+{
+	(void)ptr;
+	return(ptr);
+}
+
+void *philo_eat(void *ptr)
+{
+	(void)ptr;
+	return(ptr);
+}
+
+void *philo_think(void *ptr)
+{
+	(void)ptr;
+	return(ptr);
+}
+
 int main(int argc, char *argv[])
 {
 	t_env *env;
-
+	
 	env = get_args(argc, argv);
+	(void)env;
 	checkargs();
 	printf("This works");
 	return(0);
