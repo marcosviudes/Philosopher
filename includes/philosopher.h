@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 21:36:34 by mviudes           #+#    #+#             */
-/*   Updated: 2021/07/24 20:36:24 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/09 15:23:57 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 typedef struct s_philo
 {
 	int			id;
+	pthread_t	thread;
 }				t_philo;
 
 typedef struct s_env
@@ -35,7 +36,8 @@ typedef struct s_env
 	long			t_to_eat;
 	long			t_to_sleep;
 	long			n_must_eat;
-	t_philo		*philo;
+	time_t			time;
+	t_philo			*philo;
 }				t_env;
 
 void	exit_error(char *string);
@@ -43,5 +45,7 @@ int		ft_isnum(char *string);
 size_t	ft_strlen(const char *str);
 long	ft_absatol(const char *string);
 void	ft_putendl_fd(char *s, int fd);
+void	ft_putnbr_fd(int n, int fd);
+void	ft_putchar_fd(char c, int fd);
 
 #endif

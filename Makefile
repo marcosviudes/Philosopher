@@ -7,8 +7,8 @@ NAME		= philo
 TEST		= test
 
 CC			= gcc
-CFLAGS		= -Wall -Wextra -Werror -g3
-CFLAGS		+= -pthread
+CFLAGS		= #-Wall -Wextra -Werror -g3
+CFLAGS		+= -pthread -g3
 
 
 RM			= rm -f
@@ -19,8 +19,10 @@ SRC_DIR		= src/
 PHILO_SRC	=	main.c\
 				ft_absatol.c\
 				ft_isnum.c\
+				ft_putchar_fd.c\
 				ft_putendl_fd.c\
-				ft_strlen.c
+				ft_strlen.c\
+				ft_putnbr_fd.c
 
 TEST_SRC	=	$(SRC_DIR)/test/main.c
 
@@ -57,8 +59,10 @@ clean:
 	$(RM) $(OBJS)
 
 fclean: clean
-	$(RM) $(PHILO) $(TEST)
+	$(RM) $(NAME) $(TEST)
 re: fclean all
+debug:
+	@$(MAKE) re CFLAGS="-g3 -pthread"
 retest:
 	$(RM) test
 	make test
