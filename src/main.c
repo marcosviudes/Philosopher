@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/13 19:49:57 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/16 21:20:56 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/18 13:29:16 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ uint64_t	time_get(void)
 	ret += time.tv_usec / 1000;
 	return(ret);
 }
-
 
 void	args_checker(int argc, char **argv)
 {
@@ -104,8 +103,17 @@ void *philo_rutine(void *arg)
 		usleep(3000);
 	}
 }
+void	philo_threads_set_forks(t_philo *philo, int num_of_philos)
+{
+	/*philo[num_of_philos - 1].right_fork = &philo[0].fork;
+	while(num_of_philos--)
+		philo[num_of_philos - 1].right_fork = &philo[num_of_philos].fork;*/
+	philo[num_of_philos - 1].right_fork = pthread_mutex_init(&philo[0].fork);
+	while(num_of_philos--)
+		philo[num_of_philos - 1].right_fork = &philo[num_of_philos].fork;
+}
 
-void philo_threads_create(t_env *env)
+void	philo_threads_create(t_env *env)
 {
 	int		i;
 
@@ -113,6 +121,7 @@ void philo_threads_create(t_env *env)
 	env->philo = malloc(sizeof(t_philo) * env->num_of_philo);
 	if(!env->philo)
 		exit_error("Imposible to malloc a philo :(");
+	philo_threads_set_forks(env->philo, env->num_of_philo);
 	while(i < env->num_of_philo)
 	{
 		env->philo[i].id = i;
@@ -121,6 +130,7 @@ void philo_threads_create(t_env *env)
 		pthread_create(&env->philo[i].thread, NULL, philo_rutine, &env->philo[i]);
 		i++;
 	}
+	
 }
 
 void	philo_threads_start(t_env *env)
@@ -143,6 +153,5 @@ int main(int argc, char *argv[])
 	env->start_time = time_get();
 	philo_threads_create(env);
 	philo_threads_start(env);
-	printf("This works");
 	return(0);
 }

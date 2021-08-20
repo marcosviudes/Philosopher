@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 21:36:34 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/16 21:22:16 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/18 13:28:53 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ struct s_env;
 
 typedef struct s_philo
 {
-	int				id;
-	uint64_t		time_to_die;
-	pthread_t		thread;
-	int				fork;
-	int				*right_fork;
+	int						id;
+	uint64_t				time_to_die;
+	pthread_t				thread;
+	pthread_mutex_t			*fork;
+	pthread_mutex_t			*right_fork;
 	struct s_env	*env;
 	
 }				t_philo;
@@ -66,8 +66,10 @@ int		exit_clear_all(t_env *env);
 
 void	philo_threads_create(t_env *env);
 void	philo_threads_start(t_env *arg);
+void	philo_threads_set_forks(t_philo *philo, int num_of_philos);
 void	*philo_action_sleep(void *ptr);
 void	*philo_action_eat(void *ptr);
 void	*philo_action_eat(void *ptr);
 
 #endif
+
