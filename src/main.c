@@ -67,16 +67,29 @@ int	exit_clear_all(t_env *env)
 	exit(0);
 }
 
-void *philo_action_sleep(void *ptr)
+void *philo_action_sleep(t_philo *philo)
 {
-	(void)ptr;
-	return(ptr);
+	usleep(philo->env->time_to_sleep);
+	return(0);
 }
 
-void *philo_action_eat(void *ptr)
+void *philo_action_eat(t_philo *philo)
 {
-	(void)ptr;
-	return(ptr);
+	uint64_t actual_time;
+
+	actual_time = time_get();
+	actual_time -= philo->env->start_time;
+
+	pthread_mutex_lock(&philo->mutex_fork);
+	printf("[%-4lu ms]:\tphilo %i has taken right fork\n", actual_time, philo->id);
+	pthread_mutex_lock(philo->right_fork);
+	printf("[%-4lu ms]:\tphilo %i has taken left fork\n", actual_time, philo->id);
+	printf("[%-4lu ms]:\tphilo %i is eating\n", actual_time, philo->id);
+	pthread_mutex_unlock(&philo->mutex_fork);
+	pthread_mutex_unlock(&philo->mutex_fork);
+	usleep(5);
+
+	return(0);
 }
 
 void *philo_action_think(t_philo *philo)
@@ -100,7 +113,7 @@ void *philo_rutine(void *arg)
 		philo_action_eat(philo);
 		philo_action_sleep(philo);
 		philo_action_think(philo);
-		usleep(3000);
+	//	usleep(3000);
 	}
 }
 void	philo_threads_set_forks(t_philo *philo, int num_of_philos)
@@ -108,9 +121,14 @@ void	philo_threads_set_forks(t_philo *philo, int num_of_philos)
 	/*philo[num_of_philos - 1].right_fork = &philo[0].fork;
 	while(num_of_philos--)
 		philo[num_of_philos - 1].right_fork = &philo[num_of_philos].fork;*/
-	philo[num_of_philos - 1].right_fork = pthread_mutex_init(&philo[0].fork);
+	philo[num_of_philos - 1].right_fork = &philo[0].mutex_fork;
 	while(num_of_philos--)
-		philo[num_of_philos - 1].right_fork = &philo[num_of_philos].fork;
+	{
+		philo[num_of_philos - 1].right_fork = &philo[num_of_philos].mutex_fork;
+		pthread_mutex_init(&philo->mutex_fork, NULL);
+		pthread_mutex_unlock(&philo->mutex_fork);
+//		philo[num_of_philos - 1].right_fork = &philo[num_of_philos].fork;
+	}
 }
 
 void	philo_threads_create(t_env *env)
@@ -127,6 +145,7 @@ void	philo_threads_create(t_env *env)
 		env->philo[i].id = i;
 		env->philo[i].env = env;
 		env->philo[i].time_to_die = env->time_to_die;
+		env->philo[i].have_eated = 0;
 		pthread_create(&env->philo[i].thread, NULL, philo_rutine, &env->philo[i]);
 		i++;
 	}

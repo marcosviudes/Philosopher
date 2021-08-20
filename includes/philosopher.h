@@ -20,6 +20,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 # include <limits.h>
+# include <stdint.h>
 
 #define NUM_OF_ARGS
 
@@ -29,8 +30,10 @@ typedef struct s_philo
 {
 	int						id;
 	uint64_t				time_to_die;
+	int						fork;
+	int						have_eated;
 	pthread_t				thread;
-	pthread_mutex_t			*fork;
+	pthread_mutex_t			mutex_fork;
 	pthread_mutex_t			*right_fork;
 	struct s_env	*env;
 	
@@ -67,9 +70,9 @@ int		exit_clear_all(t_env *env);
 void	philo_threads_create(t_env *env);
 void	philo_threads_start(t_env *arg);
 void	philo_threads_set_forks(t_philo *philo, int num_of_philos);
-void	*philo_action_sleep(void *ptr);
-void	*philo_action_eat(void *ptr);
-void	*philo_action_eat(void *ptr);
+void	*philo_action_sleep(t_philo *philo);
+void	*philo_action_eat(t_philo *philo);
+void	*philo_action_eat(t_philo *philo);
 
 #endif
 
