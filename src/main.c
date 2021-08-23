@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/13 19:49:57 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/23 21:10:11 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/23 21:13:10 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,19 @@
  * -> 2 310 150 150. (Periodic)
  *  ->3 310 103 103. (Periodic)
  */
+
+/*
+void	ft_usleep(uint64_t miliseconds)
+{
+	uint64_t	end;
+
+	end = time_get_msec();
+	end += miliseconds;
+
+	while (end > time_get_msec())
+		usleep(1);
+}
+*/
 
 
 uint64_t	ft_time(uint64_t start)
@@ -187,7 +200,7 @@ void *philo_rutine(void *arg)
 	philo = ((t_philo*)arg);
 	while(1)
 	{
-	//	philo_check_dead(philo);
+		philo_check_dead(philo);
 		philo_action_eat(philo);
 		philo_action_sleep(philo);
 		philo_action_think(philo);
@@ -233,7 +246,7 @@ void	philo_threads_create(t_env *env, int num_of_philo)
 		pthread_create(&env->philo[i].thread, NULL, philo_rutine, &env->philo[i]);
 		i++;
 	}
-	pthread_create(&env->philo[i].thread, NULL, philo_rutine, &env->philo[i]);
+	
 }
 
 void	philo_threads_start(t_env *env, int num_of_philo)
