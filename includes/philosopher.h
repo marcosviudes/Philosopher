@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 21:36:34 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/23 20:58:29 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/25 22:09:51 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_philo
 {
 	int				id;
 	int				is_odd;
+	int				is_alive;
 	uint64_t		time_start;
 	uint64_t		time_to_die;
 	uint64_t		time_to_sleep;
@@ -38,6 +39,7 @@ typedef struct s_philo
 	pthread_mutex_t	mutex_left_fork;
 	pthread_mutex_t	*mutex_right_fork;
 	pthread_mutex_t	*mutex_print;
+	pthread_mutex_t *mutex_dead;
 	struct s_env	*env;
 	
 }				t_philo;
@@ -53,6 +55,7 @@ typedef struct s_env
 	uint64_t		start_time;
 	t_philo			*philo;
 	pthread_mutex_t	mutex_print;
+	pthread_mutex_t muutex_dead;
 	pthread_t		dead_checker;
 }				t_env;
 
@@ -73,12 +76,12 @@ void	exit_error(char *string);
 int		exit_clear_all(t_env *env);
 
 void	philo_threads_create(t_env *env, int num_of_philo);
-void	philo_threads_start(t_env *arg, int num_of_philos);
+void	philo_threads_end(t_env *arg, int num_of_philos);
 void	philo_threads_set_forks(t_philo *philo, int num_of_philos);
-void	*philo_check_dead(t_philo *philo);
+void	*philo_check_dead(t_env *env);
 void	*philo_action_sleep(t_philo *philo);
 void	*philo_action_eat(t_philo *philo);
-void	*philo_action_eat(t_philo *philo);
+//void	*philo_action_eat(t_philo *philo);
 
 #endif
 
