@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/11 21:36:34 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/25 22:09:51 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/26 18:55:52 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,11 @@ typedef struct s_env
 	long			time_to_sleep;
 	long			n_must_eat;
 //	time_t			time;
+	int				el_filo_ha_muerto;
 	uint64_t		start_time;
 	t_philo			*philo;
 	pthread_mutex_t	mutex_print;
-	pthread_mutex_t muutex_dead;
+	pthread_mutex_t mutex_dead;
 	pthread_t		dead_checker;
 }				t_env;
 
@@ -66,7 +67,7 @@ void	ft_putendl_fd(char *s, int fd);
 void	ft_putnbr_fd(int n, int fd);
 void	ft_putchar_fd(char c, int fd);
 
-uint64_t	time_get_msec(void);
+uint64_t	time_get_msec(uint64_t start);
 void	exit_error(char *string);
 
 void	args_checker(int argc, char **argv);

@@ -6,7 +6,7 @@
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/07/13 19:49:57 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/25 19:16:08 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/08/26 20:23:13 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,17 +54,21 @@ void	ft_usleep(uint64_t miliseconds)
 		usleep(1);
 }
 
-void	print_messege(uint64_t actual_time, t_philo *philo, char *messege)
+void	print_messege(t_philo *philo, char *messege)
 {
-
+	uint64_t actual_time;
+	
 	pthread_mutex_lock(philo->mutex_print);
+	pthread_mutex_lock(philo->mutex_dead);
+	if(philo->is_alive)
+		pthread_mutex_unlock(philo->mutex_dead);
 	actual_time = time_get_msec();
 	actual_time -= philo->time_start;
-	printf("[%6llu ms]:\t (%i)  %s\n", actual_time, philo->id + 1, messege);
+	printf("[%6llu ms]:\t (%i)  %s\n", actual_time, philo->id, messege);
 	pthread_mutex_unlock(philo->mutex_print);
 }
 
-uint64_t	time_get_msec(void)
+uint64_t	time_get_msec(uint64_t start)
 {
 	uint64_t		ret;
 	struct timeval	time;
@@ -72,6 +76,7 @@ uint64_t	time_get_msec(void)
 	gettimeofday(&time, NULL);
 	ret = time.tv_sec * 1000;
 	ret += time.tv_usec / 1000;
+	ret -= start;
 	return(ret);
 }
 
@@ -120,51 +125,54 @@ int	exit_clear_all(t_env *env)
 
 void *philo_action_sleep(t_philo *philo)
 {
-	uint64_t actual_time;
-
-	actual_time = time_get_msec();
-	actual_time -= philo->env->start_time;
-	print_messege(actual_time, philo, "is sleeping");
+	print_messege(philo, "is sleeping");
 	ft_usleep(philo->time_to_sleep);
 	return(0);
 }
 
 void philo_take_fork(t_philo *philo)
 {
-	uint64_t actual_time;
-
-	actual_time = time_get_msec();
-	actual_time -= philo->time_start;
-
-	if(philo->is_odd)
+	if(!philo->is_odd && philo->id != 0)
 	{
 		pthread_mutex_lock(&philo->mutex_left_fork);
-		print_messege(actual_time, philo, "has taken right fork");
+		//printf("--------%p\n", &philo->mutex_left_fork);
+		//fflush(stdout);
+		print_messege(philo, "has taken left  fork");
 		pthread_mutex_lock(philo->mutex_right_fork);
-		print_messege(actual_time, philo, "has taken left  fork");
-		print_messege(actual_time, philo, "is eating");
+		//printf("--------%p\n", philo->mutex_right_fork);
+		//fflush(stdout);
+		print_messege(philo, "has taken right fork");
+		return;
 	}
 	else
 	{
 		pthread_mutex_lock(philo->mutex_right_fork);
-		print_messege(actual_time, philo, "has taken left  fork");
+//		printf("--------%p\n", philo->mutex_right_fork);
+//		fflush(stdout);
+		print_messege(philo, "has taken right fork");
 		pthread_mutex_lock(&philo->mutex_left_fork);
-		print_messege(actual_time, philo, "has taken right fork");
-		print_messege(actual_time, philo, "is eating");
+//		printf("--------%p\n", &philo->mutex_left_fork);
+//		fflush(stdout);
+		print_messege(philo, "has taken left  fork");
+		return;
 	}
 }
 void *philo_action_eat(t_philo *philo)
 {
-	uint64_t actual_time;
-
-	actual_time = time_get_msec();
-	actual_time -= philo->time_start;//philo->env->start_time;
-
+	if(philo->time_last_meal >= philo->time_to_die)
+		print_messege(philo, "---------------He muerto perrrras");
 	philo_take_fork(philo);
-	philo->time_last_meal = (time_get_msec() - philo->time_start);
+	print_messege(philo, "is eating");
 	ft_usleep(philo->env->time_to_eat);
+//	philo->time_last_meal = (time_get_msec() - philo->time_start);
+	philo->time_last_meal = ft_time(0);
+	printf("---------------------------------%llu (%i)\n", philo->time_last_meal, philo->id);
+	fflush(stdout);
+//	print_messege(philo, "-------------last meal");
 	pthread_mutex_unlock(&philo->mutex_left_fork);
+//	print_messege(philo, "has drop left  fork");
 	pthread_mutex_unlock(philo->mutex_right_fork);
+//	print_messege(philo, "has drop right fork");
 	return(0);
 }
 
@@ -172,34 +180,32 @@ void *philo_action_think(t_philo *philo)
 {
 	uint64_t actual_time;
 
-	actual_time = time_get_msec();
+	actual_time = time_get_msec(0);
 	actual_time -= philo->time_start;
-	print_messege(actual_time, philo, "is thinking");
+	print_messege(philo, "is thinking");
 	return(NULL);
 }
 
 void	*philo_check_dead(t_env *env)
-{/*
-	uint64_t actual_time;
-
-	actual_time = time_get_msec();
-	philo->time_last_meal -= actual_time;
-	
-	if (philo->time_last_meal >= philo->time_to_die){
-		print_messege(actual_time, philo, "is dead");
-		exit(0);
-	}
-	//return(NULL);
-	return(NULL);*/
+{
 	int		i;
 
 	i = 0;
-	while(42 )
+	while(42)
 	{
 		if(i == env->num_of_philo)
 			i = 0;
 		if(env->philo[i].time_last_meal >= env->time_to_die)
-			return(0);//exit(0);
+		{
+			//pthread_mutex_unlock(env->philo[i].mutex_print);
+			pthread_mutex_lock(env->philo[i].mutex_print);
+			uint64_t actual_time = time_get_msec(0);
+			actual_time -= env->philo[i].time_start;
+			printf("[%6llu ms]:\t (%i)  %s\n", actual_time, i, "philo_dead");
+		//	pthread_mutex_unlock(env->philo[i].mutex_print);
+			env->philo[i].is_alive = 0;
+				return(0);//exit(0);
+		}
 		i++;
 	}
 }
@@ -229,6 +235,13 @@ void	philo_threads_set_forks(t_philo *philo, int num_of_philos)
 		philo[temp - 1].mutex_right_fork = &philo[temp].mutex_left_fork;
 	}
 	philo[num_of_philos - 1].mutex_right_fork = &philo[0].mutex_left_fork;
+	int i = 0;
+	while(i < num_of_philos)
+	{
+		printf("philo (%i) -> left_mutex %p   right_mutex %p\n", i, &philo[i].mutex_left_fork, philo[i].mutex_right_fork);
+		i++;
+	}
+	//getchar();
 }
 
 void	philo_threads_create(t_env *env, int num_of_philo)
@@ -242,7 +255,9 @@ void	philo_threads_create(t_env *env, int num_of_philo)
 		exit_error("Imposible to malloc a philo :(");
 	philo_threads_set_forks(env->philo, env->num_of_philo);
 	pthread_mutex_init(&env->mutex_print, NULL);
+	pthread_mutex_init(&env->mutex_dead, NULL);
 	pthread_mutex_unlock(&env->mutex_print);
+	pthread_mutex_unlock(&env->mutex_dead);
 	i =  0;
 	while(i < num_of_philo)
 	{
@@ -250,11 +265,14 @@ void	philo_threads_create(t_env *env, int num_of_philo)
 		env->philo[i].env = env;
 		env->philo[i].time_to_die = env->time_to_die;
 		env->philo[i].time_to_sleep = env->time_to_sleep;
-		env->philo[i].time_last_meal = time_get_msec();
+		env->philo[i].time_last_meal = 0;
 		env->philo[i].mutex_print = &env->mutex_print;
+		env->philo[i].mutex_dead = &env->mutex_dead;
 		env->philo[i].is_odd = env->philo[i].id % 2;
 		env->philo[i].time_start = time_start;
+		env->philo[i].is_alive = 1;
 		pthread_create(&env->philo[i].thread, NULL, philo_rutine, &env->philo[i]);
+	//	ft_usleep(1);
 		i++;
 	}
 	
