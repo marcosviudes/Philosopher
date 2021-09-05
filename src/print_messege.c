@@ -1,36 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isnum.c                                         :+:      :+:    :+:   */
+/*   print_messege.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/07/13 22:10:30 by mviudes           #+#    #+#             */
-/*   Updated: 2021/07/13 22:16:24 by mviudes          ###   ########.fr       */
+/*   Created: 2021/09/05 12:23:00 by mviudes           #+#    #+#             */
+/*   Updated: 2021/09/05 12:23:10 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosopher.h>
 
-static int	ft_isdigit(int c)
+void	print_messege(t_philo *philo, char *messege)
 {
-	if (c >= '0' && c <= '9')
-		return (1);
-	return (0);
-}
+	uint64_t	actual_time;
 
-int	ft_isnum(char *string)
-{
-	int	i;
-
-	i = 0;
-	while (string[i] != '\0')
-	{
-		if (string[i] == '-' && i == 0)
-			i++;
-		if (!ft_isdigit(string[i]))
-			return (0);
-		i++;
-	}
-	return (1);
+	pthread_mutex_lock(philo->mutex_print);
+	actual_time = time_get_msec(0);
+	actual_time -= philo->time_start;
+	printf("[%6llu ms]:\t (%i)  %s\n", actual_time, philo->id + 1, messege);
+	pthread_mutex_unlock(philo->mutex_print);
 }

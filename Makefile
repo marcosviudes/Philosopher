@@ -7,28 +7,33 @@ NAME		= philo
 TEST		= test
 
 CC			= gcc
-CFLAGS		= #-Wall -Wextra -Werror -g3
-CFLAGS		+= -pthread -g3
+CFLAGS		= -Wall -Wextra -Werror -O3
+CFLAGS		+= -pthread
 
 
 RM			= rm -f
 MKDIR		= mkdir -p
 
-SRC_DIR		= src/
+DIR_SRC		= src/
+DIR_UTILS	= utils/
 
 PHILO_SRC	=	main.c\
 				parser.c\
-				time_utils.c\
-				ft_absatol.c\
-				ft_isnum.c\
-				ft_putchar_fd.c\
-				ft_putendl_fd.c\
-				ft_strlen.c\
-				ft_putnbr_fd.c
+				time.c\
+				exit.c\
+				philo_rutine.c\
+				philo.c\
+				print_messege.c\
+				$(DIR_UTILS)ft_absatol.c\
+				$(DIR_UTILS)ft_isnum.c\
+				$(DIR_UTILS)ft_putchar_fd.c\
+				$(DIR_UTILS)ft_putendl_fd.c\
+				$(DIR_UTILS)ft_strlen.c\
+				$(DIR_UTILS)ft_putnbr_fd.c
 
-TEST_SRC	=	$(SRC_DIR)/test/main.c
+TEST_SRC	=	$(DIR_SRC)/test/main.c
 
-SRC_F 	= $(addprefix $(SRC_DIR), $(PHILO_SRC))
+SRC_F 	= $(addprefix $(DIR_SRC), $(PHILO_SRC))
 
 
 OBJS	= $(SRC_F:%.c=%.o)
@@ -51,11 +56,6 @@ $(TEST): $(OBJS)
 	$(CC) $(DFLAGS) $(TEST_SRC) $(INCLUDES) $(UTILS_O) -o $(TEST)
 
 .PHONY:	all clean fclean re retest debug normi
-
-normi: fclean
-	@clear
-	norminette src/*
-	norminette includes/*
 
 clean:
 	$(RM) $(OBJS)

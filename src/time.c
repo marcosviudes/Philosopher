@@ -1,18 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putchar_fd.c                                    :+:      :+:    :+:   */
+/*   time_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/11/18 17:45:19 by mviudes           #+#    #+#             */
-/*   Updated: 2021/08/08 21:39:50 by mviudes          ###   ########.fr       */
+/*   Created: 2021/08/28 15:54:45 by mviudes           #+#    #+#             */
+/*   Updated: 2021/09/04 20:32:56 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosopher.h>
 
-void	ft_putchar_fd(char c, int fd)
+uint64_t	time_get_msec(uint64_t start)
 {
-	write(fd, &c, 1);
+	uint64_t		ret;
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	ret = time.tv_sec * 1000;
+	ret += time.tv_usec / 1000;
+	ret -= start;
+	return (ret);
+}
+
+void	ft_usleep(uint64_t miliseconds)
+{
+	uint64_t	start;
+
+	start = time_get_msec(0);
+	while (time_get_msec(start) < miliseconds)
+		usleep(1);
 }

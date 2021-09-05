@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putendl_fd.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mviudes <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mviudes <mviudes@student.42madrid.com>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/18 17:53:09 by mviudes           #+#    #+#             */
-/*   Updated: 2021/07/24 19:37:11 by mviudes          ###   ########.fr       */
+/*   Updated: 2021/09/04 20:24:29 by mviudes          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ static void	ft_putstr_fd(char *string, int fd)
 	int	i;
 
 	i = 0;
-	while(string[i] != '\0')
+	while (string[i] != '\0')
 	{
-		write(1, &string[i], fd);
+		write(fd, &string[i], 1);
 		i++;
 	}
 }
@@ -27,5 +27,5 @@ static void	ft_putstr_fd(char *string, int fd)
 void	ft_putendl_fd(char *s, int fd)
 {
 	ft_putstr_fd(s, fd);
-	write(1, "\n", fd);
+	write(fd, "\n", 1);
 }
